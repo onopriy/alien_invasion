@@ -1,5 +1,6 @@
 import sys
 import pygame
+from settings import Settings
 
 
 class AlienInvasion:
@@ -8,7 +9,8 @@ class AlienInvasion:
     def __init__(self):
         """Initialized of game and create game resources"""
         pygame.init()
-        self.screen = pygame.display.set_mode((1920, 1080))
+        self.settings = Settings()
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Alien Invasion")
 
     def run_game(self):
@@ -18,6 +20,7 @@ class AlienInvasion:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
+            self.screen.fill(self.settings.background_color)  # redrawing surface in putting color
             pygame.display.flip()  # show last frame
 
 
@@ -25,4 +28,3 @@ if __name__ == '__main__':
     # creating example of game:
     ai = AlienInvasion()
     ai.run_game()
-
