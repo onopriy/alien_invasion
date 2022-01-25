@@ -4,6 +4,7 @@ import pygame
 
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
 
 
 class AlienInvasion:
@@ -18,12 +19,14 @@ class AlienInvasion:
         self.settings.screen_width = self.screen.get_rect().width
         pygame.display.set_caption("Alien Invasion")
         self.ship = Ship(self)
+        self.bullets = pygame.sprite.Group()
 
     def run_game(self):
         """Start of main game's loop"""
         while True:
             self._check_event()  # checking keyboard and mouse
             self.ship.update()  # update of ship position
+            self._update_bullets()
             self._update_screen()
 
     def _check_event(self):
@@ -42,6 +45,8 @@ class AlienInvasion:
             self.ship.moving_right = True
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = True
+        elif event.key == pygame.K_SPACE:
+            self._fire_bullet()
         elif event.key == pygame.K_ESCAPE:
             sys.exit()
 
@@ -52,10 +57,27 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
 
+    def _fire_bullet(self):
+        """Creating of new projectfile and adding it to group bullets"""
+        if len(self.bullets) < self.settings.bullets_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
+        else:
+            pass
+
+    def _update_bullets(self):
+        """Update positions of projectile and delete old"""
+        self.bullets.update()  # update position of every projectile
+        for bullet in self.bullets.copy():  # delete of invisible projectile
+            if bullet.rectangle.bottom <= 0:
+                self.bullets.remove(bullet)
+
     def _update_screen(self):
         """Update of screen"""
         self.screen.fill(self.settings.background_color)  # redrawing surface in putting color
         self.ship.blitme()  # image of ship
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
         pygame.display.flip()  # show last frame
 
 
