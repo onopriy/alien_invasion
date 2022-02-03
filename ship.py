@@ -28,3 +28,8 @@ class Ship:
         if self.moving_left and self.rect.left > 0:
             self.x -= self.settings.speed
         self.rect.x = self.x
+
+    def center_ship(self):
+        """Spawn ship in midtop"""
+        self.rect.midbottom = self.screen_rectangle.midbottom
+        self.x = float(self.rect.x)
