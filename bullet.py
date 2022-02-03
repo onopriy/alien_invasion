@@ -13,17 +13,17 @@ class Bullet(Sprite):
         self.color = self.settings.bullet_color
 
         # creating of projectile in position (0, 0) and appointment in the right position
-        self.rectangle = pygame.Rect(0, 0, self.settings.bullet_width, self.settings.bullet_height)
-        self.rectangle.midtop = ai_example.ship.rectangle.midtop
+        self.rect = pygame.Rect(0, 0, self.settings.bullet_width, self.settings.bullet_height)
+        self.rect.midtop = ai_example.ship.rect.midtop
 
         # position in float
-        self.y = float(self.rectangle.y)
+        self.y = float(self.rect.y)
 
     def update(self):
         """Moving projectile up"""
         self.y -= self.settings.bullet_speed  # new position of bullet in float format
-        self.rectangle.y = self.y  # update position of rectangle(projectile)
+        self.rect.y = self.y  # update position of rectangle(projectile)
 
     def draw_bullet(self):
         """Draw bullet on surface"""
-        pygame.draw.rect(self.screen, self.color, self.rectangle)
+        pygame.draw.rect(self.screen, self.color, self.rect)
