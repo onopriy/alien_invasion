@@ -8,6 +8,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from button import Button
+from scoreboard import Scoreboard
 
 
 class AlienInvasion:
@@ -23,6 +24,7 @@ class AlienInvasion:
         pygame.display.set_caption("Alien Invasion")
         # creating of example for make a user stats
         self.stats = GameStats(self)
+        self.scoareboard = Scoreboard(self)
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
@@ -59,6 +61,7 @@ class AlienInvasion:
             self.settings.initialized_dynamic_settings()
             self.stats.reset_stats()
             self.stats.game_active = True
+            self.scoareboard.prep_score()
 
             self.aliens.empty()
             self.bullets.empty()
@@ -121,6 +124,10 @@ class AlienInvasion:
 
     def _check_bullets_collisions(self):
         collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+        if collisions:
+            for aliens in collisions.values():
+                self.stats.score += self.settings.alien_points * len(aliens)
+            self.scoareboard.prep_score()
         if not self.aliens:
             self.bullets.empty()
             self.settings.increase_speed()
@@ -187,6 +194,7 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
+        self.scoareboard.show_score()
         if not self.stats.game_active:
             self.play_button.draw_button()
         pygame.display.flip()  # show last frame
