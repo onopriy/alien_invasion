@@ -45,6 +45,8 @@ class AlienInvasion:
         """Checking user's mouse and keyboard"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                record_file = open('record.txt', 'w+')
+                record_file.write(str(self.stats.high_score))
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
@@ -62,6 +64,8 @@ class AlienInvasion:
             self.stats.reset_stats()
             self.stats.game_active = True
             self.scoareboard.prep_score()
+            self.scoareboard.prep_level()
+            self.scoareboard.prep_ships()
 
             self.aliens.empty()
             self.bullets.empty()
@@ -79,6 +83,8 @@ class AlienInvasion:
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
         elif event.key == pygame.K_ESCAPE:
+            record_file = open('record.txt', 'w+')
+            record_file.write(str(self.stats.high_score))
             sys.exit()
 
     def _check_keyup_events(self, event):
@@ -92,6 +98,7 @@ class AlienInvasion:
         """Behavior of game when ship is hit"""
         if self.stats.ships_left > 0:
             self.stats.ships_left -= 1
+            self.scoareboard.prep_ships()
 
             # clean lists of aliens and bullets
             self.aliens.empty()
@@ -128,10 +135,13 @@ class AlienInvasion:
             for aliens in collisions.values():
                 self.stats.score += self.settings.alien_points * len(aliens)
             self.scoareboard.prep_score()
+            self.scoareboard.check_high_score()
         if not self.aliens:
             self.bullets.empty()
             self.settings.increase_speed()
             self._create_fleet()
+            self.stats.level += 1
+            self.scoareboard.prep_level()
 
     def _check_alien_bottom(self):
         """Check that alien contact to bottom of surface"""
